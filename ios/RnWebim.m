@@ -42,12 +42,12 @@ RCT_EXTERN_METHOD(getNextMessages:
 )
 
 
-RCT_EXTERN_METHOD(sendFile:(NSString *)fileURL
-                  mimeType:(NSString *)mimeType
-                  fileName:(NSString *)fileName
-                  extension:(NSString *)extension
-                  resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject
+RCT_EXTERN_METHOD(sendFileMessage:
+                (NSString *)fileURL
+                mimeType:(NSString *)mimeType
+                fileName:(NSString *)fileName
+                withResolver:(RCTPromiseResolveBlock)resolve
+                withRejecter:(RCTPromiseRejectBlock)reject
 )
 
 

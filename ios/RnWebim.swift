@@ -181,7 +181,7 @@ class RnWebim : RCTEventEmitter  {
     }
 
     @objc
-    func sendFile(
+    func sendFileMessage(
         _ fileUri: NSString,
         name: NSString,
         mimeType: NSString,
@@ -225,7 +225,7 @@ class RnWebim : RCTEventEmitter  {
                 
                 // Assuming the session.getStream() has a sendFile method
                 // Adjust the method signature based on the actual WebIM SDK
-                try self.session?.getStream().send(file: fileData, filename: name as String, mimeType: mimeType as String, completionHandler: <#(any SendFileCompletionHandler)?#>);
+                try self.session?.getStream().send(file: fileData, filename: name as String, mimeType: mimeType as String, completionHandler: nil);
                 
                 if (self.jsPromiseResolver != nil) {
                     self.jsPromiseResolver!("success");

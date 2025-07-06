@@ -43,12 +43,12 @@ const getNextMessages = (maxCount = 10) => {
   return RnWebim.getLastMessages(maxCount);
 };
 
-const sendFile = (fileUrl, mimeType, fileName, extension) => {
-  return RnWebim.sendFile(fileUrl, mimeType, fileName, extension);
+const sendFileMessage = (fileUrl, mimeType, fileName, extension) => {
+  return RnWebim.sendFileMessage(fileUrl, mimeType, fileName, extension);
 };
 
 export default {
-  sendFile,
+  sendFileMessage,
   resume,
   pause,
   destroy,
