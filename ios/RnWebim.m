@@ -42,7 +42,7 @@ RCT_EXTERN_METHOD(getNextMessages:
 )
 
 
-RCT_EXPORT_METHOD(sendFile:(NSString *)fileURL
+RCT_EXTERN_METHOD(sendFile:(NSString *)fileURL
                   mimeType:(NSString *)mimeType
                   fileName:(NSString *)fileName
                   extension:(NSString *)extension
