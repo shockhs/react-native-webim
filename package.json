@@ -1,7 +1,7 @@
 {
   "name": "rn-webim",
   "title": "React Native Webim",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "index.js",
   "files": [
     "README.md",
