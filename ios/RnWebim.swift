@@ -179,6 +179,59 @@ class RnWebim : RCTEventEmitter  {
         }
        
     }
+
+    @objc
+    func sendFile(
+        _ fileUri: NSString,
+        name: NSString,
+        mimeType: NSString,
+        extension: NSString,
+        withResolver resolve: @escaping RCTPromiseResolveBlock,
+        withRejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        
+        DispatchQueue.main.async {
+            self.jsPromiseResolver = resolve;
+            self.jsPromiseRejecter = reject;
+            
+            do {
+                // Validate file existence and size
+                let filePath = fileUri as String;
+                let fileManager = FileManager.default;
+                if !fileManager.fileExists(atPath: filePath) {
+                    throw NSError(domain: "FileError", code: -1, userInfo: [NSLocalizedDescriptionKey: "File not found"]);
+                }
+                
+                // Check file size (e.g., 10MB limit)
+                let attributes = try fileManager.attributesOfItem(atPath: filePath);
+                if let fileSize = attributes[.size] as? Int64, fileSize > 10 * 1024 * 1024 {
+                    throw NSError(domain: "FileError", code: -2, userInfo: [NSLocalizedDescriptionKey: "File size exceeded"]);
+                }
+                
+                // Validate MIME type (example: allow images and PDFs)
+                let allowedMimeTypes = ["image/jpeg", "image/png", "application/pdf"];
+                if !allowedMimeTypes.contains(mimeType as String) {
+                    throw NSError(domain: "FileError", code: -3, userInfo: [NSLocalizedDescriptionKey: "Type not allowed"]);
+                }
+                
+                // Assuming the session.getStream() has a sendFile method
+                // Adjust the method signature based on the actual WebIM SDK
+                try self.session?.getStream().sendFile(
+                    filePath: filePath,
+                    name: name as String,
+                    mimeType: mimeType as String,
+                    extension: extension as String
+                );
+                
+                if (self.jsPromiseResolver != nil) {
+                    self.jsPromiseResolver!("success");
+                }
+            } catch let error {
+                if (self.jsPromiseRejecter != nil) {
+                    self.jsPromiseRejecter!("error", "Send file error: \(error.localizedDescription)", nil);
+                }
+            }
+        }
+    }
     
     @objc
     func getLastMessages(
