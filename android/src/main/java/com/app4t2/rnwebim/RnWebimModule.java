@@ -122,6 +122,63 @@ public class RnWebimModule extends ReactContextBaseJavaModule {
 
     }
 
+    @ReactMethod
+    public void sendFile(String fileUri, String name, String mimeType, Promise promise) {
+        try {
+            // Validate file existence
+            String filePath = fileUri.startsWith("file://") ? fileUri.substring(7) : fileUri;
+            File file = new File(filePath);
+            if (!file.exists() || !file.isFile()) {
+                throw new IOException("File not found or is not a file");
+            }
+
+            // Validate file size (e.g., 10MB limit)
+            long fileSize = file.length();
+            if (fileSize > 10 * 1024 * 1024) {
+                throw new IOException("File size exceeded");
+            }
+
+            // Validate MIME type
+            String[] allowedMimeTypes = {"image/jpeg", "image/png", "application/pdf"};
+            boolean isValidMimeType = false;
+            for (String allowedType : allowedMimeTypes) {
+                if (allowedType.equals(mimeType)) {
+                    isValidMimeType = true;
+                    break;
+                }
+            }
+            if (!isValidMimeType) {
+                throw new IOException("Type not allowed");
+            }
+
+            // Read file into byte array
+            byte[] fileData = new byte[(int) fileSize];
+            try (FileInputStream fis = new FileInputStream(file)) {
+                fis.read(fileData);
+            }
+
+            // Send file using MessageStream
+            session.getStream().send(fileData, name, mimeType, new FileSendingCompletionHandler() {
+                @Override
+                public void onSuccess() {
+                    Log.i("WEBIM LOG DEBUG", "sendFile success");
+                    promise.resolve("success");
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.i("WEBIM LOG DEBUG", "Send file error");
+                    Log.i("WEBIM LOG DEBUG", e.toString());
+                    promise.reject("errorcode", "Send file error: " + e.getMessage(), e);
+                }
+            });
+        } catch (Exception e) {
+            Log.i("WEBIM LOG DEBUG", "Send file error");
+            Log.i("WEBIM LOG DEBUG", e.toString());
+            promise.reject("errorcode", "Send file error: " + e.getMessage(), e);
+        }
+    }
+
 
     @ReactMethod
     public void getLastMessages(int limit, final Promise promise) {

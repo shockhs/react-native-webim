@@ -181,11 +181,10 @@ class RnWebim : RCTEventEmitter  {
     }
 
     @objc
-    func sendFileMessage(
+    func sendFile(
         _ fileUri: NSString,
         name: NSString,
         mimeType: NSString,
-        extension: NSString,
         withResolver resolve: @escaping RCTPromiseResolveBlock,
         withRejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         
