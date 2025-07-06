@@ -4,8 +4,8 @@ package = JSON.parse(File.read(File.join(__dir__, "package.json")))
 
 Pod::Spec.new do |s|
   s.name         = "rn-webim"
-  s.version      = package["version"]
-  s.summary      = package["description"]
+  s.version      = 1.0.1
+  s.summary      = "React Native wrapper for WebIM library"  # Add this line
   s.description  = <<-DESC
                   rn-webim
                    DESC
@@ -23,4 +23,5 @@ Pod::Spec.new do |s|
   # ...
   # s.dependency "..."
 end
+
 
