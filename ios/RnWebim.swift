@@ -195,7 +195,7 @@ class RnWebim : RCTEventEmitter  {
             
             do {
                 // Validate file existence and size
-                let filePath = fileUri as String;
+                var filePath = fileUri as String;
                 let fileManager = FileManager.default;
                 if !fileManager.fileExists(atPath: filePath) {
                     throw NSError(domain: "FileError", code: -1, userInfo: [NSLocalizedDescriptionKey: "File not found"]);
@@ -213,14 +213,19 @@ class RnWebim : RCTEventEmitter  {
                     throw NSError(domain: "FileError", code: -3, userInfo: [NSLocalizedDescriptionKey: "Type not allowed"]);
                 }
                 
+                
+                if !filePath.hasPrefix("file://") {
+                    filePath = "file://" + filePath
+                }
+                guard let url = URL(string: filePath) else {
+                    throw NSError(domain: "FileError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid file URL"])
+                }
+                
+                let fileData = try Data(contentsOf: url)
+                
                 // Assuming the session.getStream() has a sendFile method
                 // Adjust the method signature based on the actual WebIM SDK
-                try self.session?.getStream().sendFile(
-                    filePath: filePath,
-                    name: name as String,
-                    mimeType: mimeType as String,
-                    extension: extension as String
-                );
+                try self.session?.getStream().send(file: fileData, filename: name as String, mimeType: mimeType as String, completionHandler: <#(any SendFileCompletionHandler)?#>);
                 
                 if (self.jsPromiseResolver != nil) {
                     self.jsPromiseResolver!("success");
